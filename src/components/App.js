@@ -6,6 +6,7 @@ import Header from "./Header";
 import AddContact from "./AddContact";
 import ContactList from "./ContactList";
 import ContactDetail from "./ContactDetail";
+import ContactDeletePage from "./ContactDeletePage";
 
 function App() {
   const LOCAL_STORAGE_KEY = "contacts";
@@ -13,9 +14,9 @@ function App() {
 
   const removeContactHanlder = (id) => {
     let newContactList = contacts.filter((contact) => {
-      return contact.id !== id;
+      return contact.id.toString()!==id;
     });
-    console.log("removing contact ", newContactList);
+    console.log("removing contact ", newContactList, contacts, id);
     setContacts(newContactList);
   };
 
@@ -23,10 +24,6 @@ function App() {
     console.log("add ", contact);
     setContacts([...contacts, { id: contacts.length, ...contact }]);
   };
-
-  const fetchContactById = (id) => {
-
-  }
 
   useEffect(() => {
     let retrievedContacts = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
@@ -50,6 +47,7 @@ function App() {
           />
           <Route path="/add" element={<AddContact addContactHandler={addContactHandler}/>} />
           <Route path="/contact-detail/:id" element={<ContactDetail/>} />
+          <Route path="/contact/delete/:id" element={<ContactDeletePage removeContactHanlder={removeContactHanlder}/>} />
         </Routes>
       </Router>
     </div>

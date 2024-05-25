@@ -1,12 +1,14 @@
 import React from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 import contactImg from "../images/contact.png";
 
-const ContactDetail = (props) => {
+const ContactDeletePage = (props) => {
+  const { id } = useParams();
   const { state } = useLocation();
   const { name, email } = state;
+  const { removeContactHanlder } = props;
   return (
     <div className="main">
       <div className="ui card centered">
@@ -25,8 +27,18 @@ const ContactDetail = (props) => {
           </button>
         </Link>
       </div>
+      <Link to="/">
+        <div className="center-div">
+          <button
+            className="ui button red center"
+            onClick={() => removeContactHanlder(id)}
+          >
+            Do you want to delete it?
+          </button>
+        </div>
+      </Link>
     </div>
   );
 };
 
-export default ContactDetail;
+export default ContactDeletePage;

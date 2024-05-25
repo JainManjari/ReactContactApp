@@ -7,21 +7,18 @@ const ContactCard = (props) => {
   const { removeContactHanlder } = props;
   return (
     <div className="item">
-      <img
-        className="ui avatar image"
-        src={contact}
-        alt="contact-image"
-      />
+      <img className="ui avatar image" src={contact} alt="contact-image" />
       <div className="content">
-        <Link to={`/contact-detail/${id}`} state={{...props.contact}}>
+        <Link to={`/contact-detail/${id}`} state={{ ...props.contact }}>
           <div className="header">{name}</div>
           <div>{email}</div>
         </Link>
-        <i
-          className="trash alternate outline icon"
-          style={{ color: "red", marginTop: "7", cursor: "pointer" }}
-          onClick={() => removeContactHanlder(id)}
-        ></i>
+        <Link to={`/contact/delete/${id}`} state={{...props.contact}}>
+          <i
+            className="trash alternate outline icon"
+            style={{ color: "red", marginTop: "7", cursor: "pointer" }}
+          ></i>
+        </Link>
       </div>
     </div>
   );
