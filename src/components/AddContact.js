@@ -1,35 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
 
-class AddContact extends React.Component {
-  state = {
-    name: "",
-    email: "",
+import {useNavigate} from "react-router-dom";
+
+const AddContact = (props) => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+
+  const navigate = useNavigate();
+  
+
+  const add = (e) => {
+    e.preventDefault();
+    if (name.length === 0 || email.length === 0) {
+      alert("All fields are to be filled");
+      return;
+    }
+    props.addContactHandler({name, email});
+    navigate("/");
   };
 
-  add = (e)=> {
 
-    e.preventDefault();
-    if(this.state.name.length===0 || this.state.email.length===0) {
-        alert("All fields are to be filled");
-        return;
-    }
-    this.props.addContactHandler(this.state);
-
-  }
-
-  render() {
     return (
       <div className="ui main">
         <h2>Add Contact</h2>
-        <form className="ui form" onSubmit={this.add}>
+        <form className="ui form" onSubmit={add}>
           <div className="field">
             <label>Name</label>
             <input
               type="text"
               name="name"
               placeholder="Name"
-              value={this.state.name}
-              onChange={(e) => this.setState({ name: e.target.value })}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
             />
           </div>
           <div className="field">
@@ -38,17 +40,14 @@ class AddContact extends React.Component {
               type="text"
               name="email"
               placeholder="Email"
-              value={this.state.email}
-              onChange={(e) => this.setState({ email: e.target.value })}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
-          <button className="ui button blue">
-            Add
-          </button>
+          <button className="ui button blue">Add</button>
         </form>
       </div>
     );
-  }
 }
 
 export default AddContact;
