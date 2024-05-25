@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 
 const ContactList = (props) => {
   const {contacts, removeContactHanlder } = props;
-  console.log("contacts ", contacts);
 
   const contactList = contacts.map((contact) => {
     return (

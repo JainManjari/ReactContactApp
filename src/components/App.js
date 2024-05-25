@@ -1,39 +1,63 @@
 import "./App.css";
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import api from "../api/contact";
 
 import Header from "./Header";
 import AddContact from "./AddContact";
 import ContactList from "./ContactList";
 import ContactDetail from "./ContactDetail";
 import ContactDeletePage from "./ContactDeletePage";
+import EditContact from "./EditContact";
 
 function App() {
-  const LOCAL_STORAGE_KEY = "contacts";
   const [contacts, setContacts] = useState([]);
 
-  const removeContactHanlder = (id) => {
+  const removeContactHanlder = async (id) => {
+    const response = await api.delete(`/contacts/${id}`);
+    console.log("delete ", response);
     let newContactList = contacts.filter((contact) => {
-      return contact.id.toString()!==id;
+      return contact.id.toString() !== id;
     });
     console.log("removing contact ", newContactList, contacts, id);
     setContacts(newContactList);
   };
 
-  const addContactHandler = (contact) => {
-    console.log("add ", contact);
-    setContacts([...contacts, { id: contacts.length, ...contact }]);
+  const addContactHandler = async (contact) => {
+    const newContact = {
+      id: Math.random(0, 88237836).toString(),
+      ...contact,
+    };
+
+    const response = await api.post("/contacts", newContact);
+    setContacts([...contacts, response.data]);
+  };
+
+  const editContactHandler = async (contact) => {
+    const response = await api.put(`/contacts/${contact.id}`, contact);
+    console.log("editconatct", response.data);
+    setContacts(
+      contacts.map((existingContact) => {
+        return existingContact.id === contact.id
+          ? response.data
+          : existingContact;
+      })
+    );
+  };
+
+  const retrievedContacts = async function () {
+    let retrievedContacts = await api.get("/contacts");
+    if (retrievedContacts.data) {
+      setContacts(retrievedContacts.data);
+    }
   };
 
   useEffect(() => {
-    let retrievedContacts = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
-    if (retrievedContacts) {
-      setContacts(retrievedContacts);
-    }
+    retrievedContacts();
   }, []); // only rendering it once
 
   useEffect(() => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(contacts));
+    retrievedContacts();
   }, [contacts]); // updating local storage every time a new contact is added
 
   return (
@@ -43,11 +67,28 @@ function App() {
         <Routes>
           <Route
             path="/"
-            element={<ContactList contacts={contacts} removeContactHanlder={removeContactHanlder}/>}
+            element={
+              <ContactList
+                contacts={contacts}
+                removeContactHanlder={removeContactHanlder}
+              />
+            }
           />
-          <Route path="/add" element={<AddContact addContactHandler={addContactHandler}/>} />
-          <Route path="/contact-detail/:id" element={<ContactDetail/>} />
-          <Route path="/contact/delete/:id" element={<ContactDeletePage removeContactHanlder={removeContactHanlder}/>} />
+          <Route
+            path="/add"
+            element={<AddContact addContactHandler={addContactHandler} />}
+          />
+          <Route
+            path="/contact/edit/:id"
+            element={<EditContact editContactHandler={editContactHandler} />}
+          />
+          <Route path="/contact-detail/:id" element={<ContactDetail />} />
+          <Route
+            path="/contact/delete/:id"
+            element={
+              <ContactDeletePage removeContactHanlder={removeContactHanlder} />
+            }
+          />
         </Routes>
       </Router>
     </div>
@@ -55,3 +96,6 @@ function App() {
 }
 
 export default App;
+
+// npm install -g json-server
+// sudo npm install --save axios
