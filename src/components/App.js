@@ -9,6 +9,14 @@ function App() {
   const LOCAL_STORAGE_KEY = "contacts";
   const [contacts, setContacts] = useState([]);
 
+  const removeContactHanlder = (id) => {
+    let newContactList = contacts.filter((contact)=>{
+      return contact.id!==id
+    });
+    console.log("removing contact ",newContactList);
+    setContacts(newContactList);
+  }
+
   const addContactHandler = (contact) => {
     setContacts([...contacts, {id:contacts.length,...contact}]);
   };
@@ -28,7 +36,7 @@ function App() {
     <div className="ui container">
       <Header />
       <AddContact addContactHandler={addContactHandler} />
-      <ContactList contacts={contacts} />
+      <ContactList contacts={contacts} removeContactHanlder={removeContactHanlder}/>
     </div>
   );
 }
