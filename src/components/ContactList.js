@@ -3,7 +3,7 @@ import ContactCard from "./ContactCard";
 import { Link } from "react-router-dom";
 
 const ContactList = (props) => {
-  const {contacts, removeContactHanlder } = props;
+  const {contacts, removeContactHanlder, term, searchContactHandler} = props;
 
   const contactList = contacts.map((contact) => {
     return (
@@ -20,7 +20,13 @@ const ContactList = (props) => {
       <Link to="/add">
         <button className="ui button blue right">Add Contact</button>
       </Link>
-      {contactList}
+      <div className="ui search">   
+            <div className="ui icon input">
+                <input type="text" placeholder="Search Contact" className="prompt" value={term} onChange={searchContactHandler}/>
+                <i className="search icon"/>
+            </div>
+      </div>
+      {contactList.length>0 ? contactList : "No Contacts Available"}
     </div>
   );
 };

@@ -12,6 +12,8 @@ import EditContact from "./EditContact";
 
 function App() {
   const [contacts, setContacts] = useState([]);
+  const [seachTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
 
   const removeContactHanlder = async (id) => {
     const response = await api.delete(`/contacts/${id}`);
@@ -45,6 +47,20 @@ function App() {
     );
   };
 
+  const searchContactHandler = async function(e) {
+    setSearchTerm(e.target.value);
+    console.log("search term ", seachTerm);
+    if(seachTerm!=="") {
+      const results = contacts.filter((contact)=>{
+        return Object.values(contact).join(" ").toLowerCase().includes(seachTerm.toLowerCase())
+      });
+      setSearchResults(results);
+    } else {
+      setSearchResults(contacts);
+    }
+
+  }
+
   const retrievedContacts = async function () {
     let retrievedContacts = await api.get("/contacts");
     if (retrievedContacts.data) {
@@ -69,8 +85,10 @@ function App() {
             path="/"
             element={
               <ContactList
-                contacts={contacts}
+                contacts={seachTerm.length<1 ? contacts : searchResults}
                 removeContactHanlder={removeContactHanlder}
+                searchContactHandler={searchContactHandler}
+                term = {seachTerm}
               />
             }
           />
